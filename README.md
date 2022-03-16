@@ -1,3 +1,3 @@
 # compass-web
 
-front end for Compass application.
+Front end for Compass application. Written in React.
