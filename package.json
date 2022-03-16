@@ -1,5 +1,5 @@
 {
-  "name": "astrolabe",
+  "name": "compass-web",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,15 +12,21 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-ga": "^3.3.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "prebuild": "echo \"{\\\"gitsha\\\": \\\"$(git rev-parse --short HEAD)\\\"}\" > ./src/config/githash.json",
+    "build": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD`  react-scripts build",
+    "pretest": "npm run lint",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "dotenv -e .env react-scripts build",
+    "deploy": "dotenv -c .env -- bash -c 'aws --profile ${PROFILE} --region ${REGION} s3 sync build s3://${S3_BUCKET}/dist'",
+    "postdeploy": "dotenv -c .env -- bash -c 'aws --profile ${PROFILE} --region ${REGION} cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --path \"/*\"'"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +45,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv-cli": "^5.0.0",
+    "eslint": "^8.11.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "prettier": "2.6.0"
   }
 }
