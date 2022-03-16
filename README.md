@@ -1,3 +1,3 @@
-# astrolabe-web
+# compass-web
 
-front end for astrolabe application.
+front end for Compass application.
