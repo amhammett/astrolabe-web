@@ -16,6 +16,7 @@ import MapIcon from '@mui/icons-material/Map';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 
 import { drawerWidth, hashCode } from '../config/defaults';
 import { useMediaQuery } from '../config/responsive';
@@ -23,6 +24,18 @@ import { useMediaQuery } from '../config/responsive';
 export default function MenuDrawer(props) {
   const { drawerOpen, toggleDrawer } = props;
   const isMobile = useMediaQuery('(max-width: 48em)');
+  const buildDateTime = process.env.CODEBUILD_START_TIME
+    ? process.env.CODEBUILD_START_TIME
+    : new Intl.DateTimeFormat('en-AU', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        // timeStyle: 'long',
+      }).format(Date.now());
 
   return (
     <Drawer
@@ -109,7 +122,10 @@ export default function MenuDrawer(props) {
           bottom: 0,
         }}
       >
-        made with <FavoriteIcon sx={{ color: hashCode, fontSize: '1em' }} />{' '}
+        made with
+        <Tooltip title={buildDateTime}>
+          <FavoriteIcon sx={{ color: hashCode, fontSize: '1em' }} />
+        </Tooltip>
         strawberry.coffee
       </Box>
     </Drawer>
