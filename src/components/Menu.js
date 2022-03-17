@@ -21,7 +21,7 @@ import { drawerWidth, hashCode } from '../config/defaults';
 import { useMediaQuery } from '../config/responsive';
 
 export default function MenuDrawer(props) {
-  const { drawerOpen } = props;
+  const { drawerOpen, toggleDrawer } = props;
   const isMobile = useMediaQuery('(max-width: 48em)');
 
   return (
@@ -35,7 +35,12 @@ export default function MenuDrawer(props) {
       <Box sx={{ width: drawerWidth }} role="presentation">
         <Toolbar />
         <List>
-          <ListItem button component={Link} to="/">
+          <ListItem
+            button
+            component={Link}
+            to="/"
+            onClick={() => toggleDrawer(false)}
+          >
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
@@ -48,7 +53,12 @@ export default function MenuDrawer(props) {
             </ListItemIcon>
             <ListItemText primary={'Statistics'} />
           </ListItem>
-          <ListItem button component={Link} to="/locations">
+          <ListItem
+            button
+            component={Link}
+            to="/locations"
+            onClick={() => toggleDrawer(false)}
+          >
             <ListItemIcon>
               <MapIcon />
             </ListItemIcon>
@@ -75,7 +85,12 @@ export default function MenuDrawer(props) {
         </List>
         <Divider />
         <List>
-          <ListItem button component={Link} to="/settings">
+          <ListItem
+            button
+            component={Link}
+            to="/settings"
+            onClick={() => toggleDrawer(false)}
+          >
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
