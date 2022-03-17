@@ -24,8 +24,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "dotenv -e .env react-scripts build",
-    "deploy": "dotenv -c .env -- bash -c 'aws --profile ${PROFILE} --region ${REGION} s3 sync build s3://${S3_BUCKET}/dist'",
-    "postdeploy": "dotenv -c .env -- bash -c 'aws --profile ${PROFILE} --region ${REGION} cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --path \"/*\"'"
+    "deploy": "dotenv -c .env -- bash -c 'aws s3 sync build s3://${S3_BUCKET}/dist'",
+    "postdeploy": "dotenv -c .env -- bash -c 'aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --path \"/*\"'"
   },
   "eslintConfig": {
     "extends": [

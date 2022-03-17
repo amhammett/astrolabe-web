@@ -9,5 +9,6 @@ phases:
       - npm install
       - > 
         echo "{\"foo\": \"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > ./src/config/githash.json
+      - env
       - npm run build
       - npm run deploy
