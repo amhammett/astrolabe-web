@@ -30,7 +30,7 @@ function App() {
       <CssBaseline />
       <div className="App">
         <Header toggleDrawer={toggleDrawer} />
-        <Menu drawerOpen={drawerOpen} />
+        <Menu toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} />
         <Content drawerOpen={drawerOpen} />
       </div>
     </ThemeProvider>
