@@ -19,8 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "echo \"{\\\"gitsha\\\": \\\"$(git rev-parse --short HEAD)\\\"}\" > ./src/config/githash.json",
-    "build": "REACT_APP_GIT_SHA=`git rev-parse --short HEAD`  react-scripts build",
+    "build": "react-scripts build",
     "pretest": "npm run lint",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

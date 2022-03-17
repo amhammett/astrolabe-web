@@ -5,9 +5,10 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
+      - n 16
       - npm install
+      - echo "{\"foo\": \"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > ./src/config/githash.json"
   build:
     commands:
-      - n 16
       - npm run build
       - aws run deploy
