@@ -10,4 +10,4 @@ phases:
       - > 
         echo "{\"foo\": \"${CODEBUILD_RESOLVED_SOURCE_VERSION}\"}" > ./src/config/githash.json
       - npm run build
-      - aws run deploy
+      - npm run deploy
