@@ -4,51 +4,117 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Grid';
+import KeyIcon from '@mui/icons-material/Key';
 import SaveIcon from '@mui/icons-material/Save';
+import Switch from '@mui/material/Switch';
 import UploadIcon from '@mui/icons-material/Upload';
 
-export default function Settings() {
+function generateKey(words) {
+  return (
+    words.adjectives[Math.floor(Math.random() * words.adjectives.length)] +
+    ' ' +
+    words.adjectives[Math.floor(Math.random() * words.adjectives.length)] +
+    ' ' +
+    words.nouns[Math.floor(Math.random() * words.nouns.length)]
+  );
+}
+
+export default function Settings(props) {
+  const { upload, setUpload } = props;
+  const [words, setWords] = React.useState([]);
+  const [key, setKey] = React.useState('');
+  const [potentialKey, setPotentialKey] = React.useState('');
+
+  const fetchData = () => {
+    fetch('/data/words.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((words) => {
+        setWords(words);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+  const findKey = () => {
+    const savedKey = localStorage.getItem('key');
+    setKey(savedKey);
+  };
+
+  React.useEffect(() => {
+    fetchData();
+    findKey();
+  }, []);
+
   return (
     <Box>
       <Grid container spacing={2}>
+        {key ? (
+          <>
+            <Grid item xs={8}>
+              Your key
+            </Grid>
+            <Grid item xs={4}>
+              {key}
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item xs={8}>
+              Generate Key
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                startIcon={<KeyIcon />}
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setPotentialKey(generateKey(words));
+                }}
+              >
+                Generate
+              </Button>
+            </Grid>
+          </>
+        )}
+        {!key && potentialKey && (
+          <>
+            <Grid item xs={8}>
+              {potentialKey}
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                startIcon={<SaveIcon />}
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  setKey(potentialKey);
+                  localStorage.setItem('key', potentialKey);
+                }}
+              >
+                Save
+              </Button>
+            </Grid>
+          </>
+        )}
+        {key && (
+          <>
+            <Grid item xs={8}>
+              Upload data
+            </Grid>
+            <Grid item xs={4}>
+              <Switch checked={upload} onChange={() => setUpload(!upload)} />
+            </Grid>
+          </>
+        )}
         <Grid item xs={8}>
-          Save existing location data
-        </Grid>
-        <Grid item xs={4}>
-          <Button
-            startIcon={<SaveIcon />}
-            variant="outlined"
-            color="success"
-            disabled
-            onClick={() => {
-              // const message = localStorage.getItem('locations')
-              // const encrypted = CryptoJS.AES.encrypt(message, key);
-              // console.log(encrypted.toString())
-            }}
-          >
-            Save
-          </Button>
-        </Grid>
-        <Grid item xs={8}>
-          Import location data
-        </Grid>
-        <Grid item xs={4}>
-          <Button
-            startIcon={<UploadIcon />}
-            variant="outlined"
-            color="secondary"
-            disabled
-            onClick={() => {
-              // const encrypted = 'foobar=' // add via modal input
-              // const decrypted = CryptoJS.AES.decrypt(encrypted, key);
-              // localStorage.setItem('locations', decrypted)
-            }}
-          >
-            Upload
-          </Button>
-        </Grid>
-        <Grid item xs={8}>
-          Delete location data saved in LocalStorage?
+          Delete site data from LocalStorage?
         </Grid>
         <Grid item xs={4}>
           <Button
@@ -56,7 +122,7 @@ export default function Settings() {
             variant="outlined"
             color="error"
             onClick={() => {
-              ['locations', 'regions', 'types'].forEach((key) => {
+              ['locations', 'regions', 'types', 'key'].forEach((key) => {
                 console.log('deleting', key);
                 const currentValue = localStorage.getItem(key);
                 if (currentValue) {
@@ -64,6 +130,7 @@ export default function Settings() {
                 }
                 localStorage.removeItem(key);
               });
+              setKey('');
             }}
           >
             Delete

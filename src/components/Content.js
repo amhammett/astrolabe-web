@@ -37,6 +37,7 @@ function usePageTracking() {
 }
 
 export default function Content(props) {
+  const [upload, setUpload] = React.useState(false);
   usePageTracking();
 
   return (
@@ -52,7 +53,10 @@ export default function Content(props) {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/locations" element={<Locations />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route
+          path="/settings"
+          element={<Settings upload={upload} setUpload={setUpload} />}
+        />
       </Routes>
     </Box>
   );
