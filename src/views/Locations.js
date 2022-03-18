@@ -14,7 +14,7 @@ import { Filter } from '../components/Filter';
 import { useMediaQuery } from '../config/responsive';
 
 function LocationRow(props) {
-  const { data, locations, setLocations } = props;
+  const { data, locations, setHasChanges, setLocations, updateVisited } = props;
   const isMobile = useMediaQuery('(max-width: 48em)');
 
   const displayData = (props) => {
@@ -58,6 +58,7 @@ function LocationRow(props) {
     setLocations(updatedLocations);
     localStorage.setItem('locations', JSON.stringify(locations));
   };
+
   return !displayData(props, data) ? null : (
     <TableRow
       key={data.name}
@@ -67,7 +68,11 @@ function LocationRow(props) {
       <TableCell>
         <Checkbox
           checked={data.checked}
-          onClick={(event) => visitedToggle(event, data.name)}
+          onClick={(event) => {
+            visitedToggle(event, data.name);
+            setHasChanges(true);
+            updateVisited(data.name, data.checked);
+          }}
           inputProps={{ 'aria-label': 'controlled' }}
         />
       </TableCell>
@@ -79,10 +84,12 @@ function LocationRow(props) {
   );
 }
 
-export default function Locations() {
+export default function Locations(props) {
+  const { sync } = props;
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [locations, setLocations] = React.useState({});
+  const [visited, setVisited] = React.useState([]);
   const [regions, setRegions] = React.useState([]);
   const [types, setTypes] = React.useState([]);
   // filters
@@ -92,20 +99,25 @@ export default function Locations() {
   const [filterVisited, setFilterVisited] = React.useState(false);
   // more
   const isMobile = useMediaQuery('(max-width: 48em)');
+  const [hasChanges, setHasChanges] = React.useState(false);
 
   const processLocations = (data) => {
-    const savedLocations = JSON.parse(localStorage.getItem('locations'));
+    const savedVisits = localStorage.getItem('visited');
+    savedVisits && setVisited(JSON.parse(savedVisits));
+
     const updatedLocations = {};
-    for (let i = 0; i < data.length; i++) {
-      if (!data[i].hidden) {
-        if (savedLocations && savedLocations[data[i].name]) {
-          data[i].checked = savedLocations[data[i].name].checked || false;
+    data.forEach((location) => {
+      if (!location.hidden) {
+        if (savedVisits && savedVisits.indexOf(location.name) !== -1) {
+          location.checked = true;
         } else {
-          data[i].checked = false;
+          location.checked = false;
         }
-        updatedLocations[data[i].name] = data[i];
+        updatedLocations[location.name] = location;
+        return location;
       }
-    }
+    });
+
     setLocations(updatedLocations);
     localStorage.setItem('locations', JSON.stringify(updatedLocations));
     setLoading(false);
@@ -121,7 +133,30 @@ export default function Locations() {
     localStorage.setItem('types', JSON.stringify(data));
   };
 
-  const getData = () => {
+  const updateVisited = (name, checked) => {
+    let visitedUpdate;
+    if (visited > 0) {
+      console.log('reset visited');
+      setVisited([]);
+    }
+
+    if (checked && visited.indexOf(name) === -1) {
+      visited.push(name);
+      visitedUpdate = visited;
+    } else if (!checked) {
+      const nameInArray = visited.indexOf(name);
+      if (nameInArray !== -1) {
+        visited.splice(nameInArray, 1);
+        visitedUpdate = visited;
+      }
+    }
+
+    if (visitedUpdate) {
+      setVisited(visitedUpdate);
+    }
+  };
+
+  const fetchLocationData = () => {
     fetch('/data/location.json', {
       headers: {
         'Content-Type': 'application/json',
@@ -133,20 +168,35 @@ export default function Locations() {
       })
       .then((data) => {
         setData(data);
-        processLocations(data.locations);
+        processLocations(data.locations, visited);
         processRegions(data.regions);
         processTypes(data.types);
       })
       .catch((e) => {
-        setLocations(JSON.parse(localStorage.getItem('locations')));
-        setRegions(JSON.parse(localStorage.getItem('regions')));
-        setTypes(JSON.parse(localStorage.getItem('types')));
+        console.log(e);
+        const savedLocations = localStorage.getItem('locations');
+        savedLocations && setLocations(JSON.parse(savedLocations));
+        const savedRegions = localStorage.getItem('regions');
+        savedRegions && setRegions(JSON.parse(savedRegions));
+        const savedTypes = localStorage.getItem('types');
+        savedTypes && setTypes(JSON.parse(savedTypes));
+        setLoading(false);
       });
   };
 
   React.useEffect(() => {
-    getData();
-  }, []);
+    loading && fetchLocationData();
+
+    if (hasChanges && sync) {
+      setTimeout(() => {
+        console.log('changes require uploading');
+        // put to api
+        console.log(visited);
+        localStorage.setItem('visited', JSON.stringify(visited));
+        setHasChanges(false);
+      }, 2000);
+    }
+  }, [hasChanges, loading]);
 
   return (
     <Box>
@@ -200,13 +250,15 @@ export default function Locations() {
                   return (
                     <LocationRow
                       key={id}
+                      data={locations[id]}
                       filterRegions={filterRegions}
                       filterSearch={filterSearch}
                       filterTypes={filterTypes}
                       filterVisited={filterVisited}
-                      setLocations={setLocations}
-                      data={locations[id]}
                       locations={locations}
+                      setHasChanges={setHasChanges}
+                      setLocations={setLocations}
+                      updateVisited={updateVisited}
                     />
                   );
                 })}

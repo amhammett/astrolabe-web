@@ -122,10 +122,10 @@ export default function MenuDrawer(props) {
           bottom: 0,
         }}
       >
-        made with
+        made with{' '}
         <Tooltip title={buildDateTime}>
           <FavoriteIcon sx={{ color: hashCode, fontSize: '1em' }} />
-        </Tooltip>
+        </Tooltip>{' '}
         strawberry.coffee
       </Box>
     </Drawer>

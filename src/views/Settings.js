@@ -7,7 +7,15 @@ import Grid from '@mui/material/Grid';
 import KeyIcon from '@mui/icons-material/Key';
 import SaveIcon from '@mui/icons-material/Save';
 import Switch from '@mui/material/Switch';
-import UploadIcon from '@mui/icons-material/Upload';
+
+const localStorageKeys = [
+  'key',
+  'locations',
+  'regions',
+  'types',
+  'sync',
+  'visited',
+];
 
 function generateKey(words) {
   return (
@@ -20,7 +28,7 @@ function generateKey(words) {
 }
 
 export default function Settings(props) {
-  const { upload, setUpload } = props;
+  const { sync, setSync } = props;
   const [words, setWords] = React.useState([]);
   const [key, setKey] = React.useState('');
   const [potentialKey, setPotentialKey] = React.useState('');
@@ -106,10 +114,17 @@ export default function Settings(props) {
         {key && (
           <>
             <Grid item xs={8}>
-              Upload data
+              Enable data sync
             </Grid>
             <Grid item xs={4}>
-              <Switch checked={upload} onChange={() => setUpload(!upload)} />
+              <Switch
+                checked={sync}
+                onChange={() => {
+                  const futureState = !sync;
+                  setSync(futureState);
+                  localStorage.setItem('sync', futureState);
+                }}
+              />
             </Grid>
           </>
         )}
@@ -122,7 +137,7 @@ export default function Settings(props) {
             variant="outlined"
             color="error"
             onClick={() => {
-              ['locations', 'regions', 'types', 'key'].forEach((key) => {
+              localStorageKeys.forEach((key) => {
                 console.log('deleting', key);
                 const currentValue = localStorage.getItem(key);
                 if (currentValue) {

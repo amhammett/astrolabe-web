@@ -16,7 +16,9 @@ function isProduction() {
 function initialiseAnalytics() {
   if (isProduction()) {
     const TRACKING_ID = process.env.REACT_APP_GA_ID;
-    ReactGA.initialize(TRACKING_ID);
+    ReactGA.initialize(TRACKING_ID, {
+      debug: true,
+    });
   }
 }
 
@@ -37,7 +39,10 @@ function usePageTracking() {
 }
 
 export default function Content(props) {
-  const [upload, setUpload] = React.useState(false);
+  const [sync, setSync] = React.useState(
+    localStorage.getItem('sync') !== null &&
+      localStorage.getItem('sync') === 'true'
+  );
   usePageTracking();
 
   return (
@@ -52,10 +57,10 @@ export default function Content(props) {
       <Toolbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/locations" element={<Locations />} />
+        <Route path="/locations" element={<Locations sync={sync} />} />
         <Route
           path="/settings"
-          element={<Settings upload={upload} setUpload={setUpload} />}
+          element={<Settings sync={sync} setSync={setSync} />}
         />
       </Routes>
     </Box>
