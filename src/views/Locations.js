@@ -10,6 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
+import { visitedGet, visitedPut } from '../api/userApi';
 import { Filter } from '../components/Filter';
 import { useMediaQuery } from '../config/responsive';
 
@@ -87,6 +88,7 @@ function LocationRow(props) {
 export default function Locations(props) {
   const { sync } = props;
   const [loading, setLoading] = React.useState(true);
+  const [syncing, setSyncing] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [locations, setLocations] = React.useState({});
   const [visited, setVisited] = React.useState([]);
@@ -185,18 +187,17 @@ export default function Locations(props) {
   };
 
   React.useEffect(() => {
-    loading && fetchLocationData();
+    syncing && loading && visitedGet(setSyncing, setVisited);
+    !syncing && loading && fetchLocationData();
+    syncing && !sync && setSyncing(false);
 
     if (hasChanges && sync) {
       setTimeout(() => {
         console.log('changes require uploading');
-        // put to api
-        console.log(visited);
-        localStorage.setItem('visited', JSON.stringify(visited));
-        setHasChanges(false);
+        visitedPut(visited, setHasChanges);
       }, 2000);
     }
-  }, [hasChanges, loading]);
+  }, [hasChanges, loading, syncing]);
 
   return (
     <Box>
