@@ -20,6 +20,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint src test",
     "pretest": "npm run lint",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -52,6 +53,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
+    "mocha": "^9.2.2",
     "prettier": "2.6.0"
   }
 }
