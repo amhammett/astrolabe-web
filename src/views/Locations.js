@@ -14,7 +14,7 @@ import { visitedGet, visitedPut } from '../api/userApi';
 import { Filter } from '../components/Filter';
 import { useMediaQuery } from '../config/responsive';
 
-function LocationRow(props) {
+export function LocationRow(props) {
   const { data, locations, setHasChanges, setLocations, updateVisited } = props;
   const isMobile = useMediaQuery('(max-width: 48em)');
 
@@ -85,7 +85,7 @@ function LocationRow(props) {
   );
 }
 
-export default function Locations(props) {
+export function Locations(props) {
   const { sync } = props;
   const [loading, setLoading] = React.useState(true);
   const [syncing, setSyncing] = React.useState(true);

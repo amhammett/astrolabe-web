@@ -5,7 +5,7 @@ import ReactGA from 'react-ga';
 import Toolbar from '@mui/material/Toolbar';
 
 import Home from '../views/Home';
-import Locations from '../views/Locations';
+import { Locations } from '../views/Locations';
 import Settings from '../views/Settings';
 import { drawerWidth } from '../config/defaults';
 

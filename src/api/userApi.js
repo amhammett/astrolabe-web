@@ -2,7 +2,7 @@ import { visitedEndpoint } from '../config/api';
 import { FEATURE_API_ENABLE } from '../config/features';
 
 export function visitedPut(visited, setHasChanges) {
-  if (FEATURE_API_ENABLE) {
+  if (FEATURE_API_ENABLE && visitedEndpoint) {
     fetch(visitedEndpoint, {
       method: 'PUT',
       headers: {
@@ -28,7 +28,7 @@ export function visitedPut(visited, setHasChanges) {
 }
 
 export function visitedGet(setSyncing, setVisited) {
-  if (FEATURE_API_ENABLE) {
+  if (FEATURE_API_ENABLE && visitedEndpoint) {
     fetch(visitedEndpoint, {
       method: 'GET',
       headers: {
