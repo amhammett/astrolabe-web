@@ -196,6 +196,9 @@ export function Locations(props) {
         console.log('changes require uploading');
         visitedPut(visited, setHasChanges);
       }, 2000);
+    } else if (hasChanges) {
+      localStorage.setItem('visited', JSON.stringify(visited));
+      setHasChanges(false);
     }
   }, [hasChanges, loading, syncing]);
 

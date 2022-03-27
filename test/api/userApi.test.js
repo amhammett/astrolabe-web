@@ -48,7 +48,7 @@ describe('api disabled', () => {
 
     userApi.visitedPut(visited, setHasChangesMock);
 
-    expect(setItemMock).toBeCalled();
-    expect(setHasChangesMock).toBeCalledWith(false);
+    expect(setItemMock).not.toBeCalled();
+    expect(setHasChangesMock).not.toBeCalledWith(false);
   });
 });

@@ -44,8 +44,5 @@ export function visitedPut(visited, setHasChanges) {
         localStorage.setItem('visited', JSON.stringify(visited));
         setHasChanges(false);
       });
-  } else {
-    localStorage.setItem('visited', JSON.stringify(visited));
-    setHasChanges(false);
   }
 }
