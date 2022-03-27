@@ -1,7 +1,33 @@
 import * as userApi from '../../src/api/userApi';
 
-describe('api user calls', () => {
+const mockFeatures = jest.fn();
+jest.mock('../../src/config/settings', () => ({
+  get features() {
+    return mockFeatures();
+  },
+}));
+const mockApi = jest.fn();
+jest.mock('../../src/config/api', () => ({
+  get visitedEndpoint() {
+    return mockApi();
+  },
+}));
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ locations: { foo: 'bar' } }),
+  })
+);
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+describe('api disabled', () => {
   test('visitedGet disabled api feature', () => {
+    mockFeatures.mockReturnValue({
+      FEATURE_API_ENABLE: false,
+    });
+    mockApi.mockReturnValue('https://local.test/locations/user');
     const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
     const setSyncingMock = jest.fn();
 
@@ -12,6 +38,10 @@ describe('api user calls', () => {
   });
 
   test('visitedPut disabled api feature', () => {
+    mockFeatures.mockReturnValue({
+      FEATURE_API_ENABLE: false,
+    });
+    mockApi.mockReturnValue('https://local.test/locations/user');
     const setItemMock = jest.spyOn(Storage.prototype, 'setItem');
     const setHasChangesMock = jest.fn();
     const visited = [];
