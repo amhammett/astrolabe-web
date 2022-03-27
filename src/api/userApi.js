@@ -1,8 +1,8 @@
 import { visitedEndpoint } from '../config/api';
-import { FEATURE_API_ENABLE } from '../config/features';
+import { features } from '../config/settings';
 
 export function visitedGet(setSyncing, setVisited) {
-  if (FEATURE_API_ENABLE && visitedEndpoint) {
+  if (features.FEATURE_API_ENABLE && visitedEndpoint) {
     fetch(visitedEndpoint, {
       method: 'GET',
       headers: {
@@ -25,7 +25,7 @@ export function visitedGet(setSyncing, setVisited) {
 }
 
 export function visitedPut(visited, setHasChanges) {
-  if (FEATURE_API_ENABLE && visitedEndpoint) {
+  if (features.FEATURE_API_ENABLE && visitedEndpoint) {
     fetch(visitedEndpoint, {
       method: 'PUT',
       headers: {
