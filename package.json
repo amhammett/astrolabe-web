@@ -7,7 +7,7 @@
     "build": "react-scripts build",
     "lint": "eslint src test",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/jest",
+    "test": "jest",
     "eject": "react-scripts eject",
     "predeploy": "dotenv -e .env react-scripts build",
     "deploy": "dotenv -c .env -- bash -c 'aws s3 sync build s3://${S3_BUCKET}/dist'",
@@ -68,6 +68,7 @@
       "lcov",
       "cobertura"
     ],
+    "setupFilesAfterEnv": ["<rootDir>/test/setupTests.js"],
     "testMatch": [
       "**/*.test.js"
     ],
