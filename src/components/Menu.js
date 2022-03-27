@@ -28,12 +28,6 @@ export default function MenuDrawer(props) {
     ? process.env.CODEBUILD_START_TIME
     : new Intl.DateTimeFormat('en-AU', {
         year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false,
         // timeStyle: 'long',
       }).format(Date.now());
 
